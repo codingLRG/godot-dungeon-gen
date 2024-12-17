@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://tvb8ir7p8o2o"]
+
+[ext_resource type="MeshLibrary" uid="uid://ci3ws4ql5sy3v" path="res://Dungeon/dungeon_tile_mesh.tres" id="1_e4ax7"]
+[ext_resource type="Script" path="res://Dungeon/dun_gen.gd" id="1_om3f5"]
+
+[node name="DunGen" type="Node3D"]
+script = ExtResource("1_om3f5")
+border_size = 5
+space = 15
+
+[node name="GridMap" type="GridMap" parent="."]
+mesh_library = ExtResource("1_e4ax7")
+cell_size = Vector3(1, 1, 1)
+cell_center_y = false
+data = {
+"cells": PackedInt32Array(65535, 65535, 0, 65535, 5, 0, 5, 65535, 0, 0, 65535, 0, 0, 5, 0, 5, 0, 0, 65535, 0, 0, 1, 65535, 0, 1, 5, 0, 5, 1, 0, 65535, 1, 0, 2, 65535, 0, 2, 5, 0, 5, 2, 0, 65535, 2, 0, 3, 65535, 0, 3, 5, 0, 5, 3, 0, 65535, 3, 0, 4, 65535, 0, 4, 5, 0, 5, 4, 0, 65535, 4, 0, 5, 5, 0)
+}
