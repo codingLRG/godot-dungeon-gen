@@ -11,12 +11,13 @@ var dun_seed : int
 var generated : bool
 
 func _init(border_param : int = 5, 
-space_param : int = 15, seed_param = null):
+space_param : int = 15, seed_param = ""):
 	self.border_size = border_param
-	self.max_rooms = border_param**2 - space_param
-	if(seed_param):
-		dun_seed = seed_param.hash()
-	var starting_local = border_param**2/2 + 1
+	self.max_rooms = space_param - 2
+	dun_seed = seed_param.hash() if seed_param else randi()
+	seed(dun_seed)
+	var even_param : int = [border_param,border_param+1,1,0].pick_random()
+	var starting_local : int = (border_param**2)/2+1 if border_param % 2 == 1 else (border_param**2 - border_param)/2 + even_param
 	self.root_node = DungeonNode.new(starting_local)
 	_populate()
 	self.root_node.quality = -1
@@ -24,21 +25,21 @@ space_param : int = 15, seed_param = null):
 
 func _populate(param_node := root_node):
 	pointer_node = param_node
-	var chance = random_gen.randi_range(
-		1,max(1, 6 - _depth_tool(pointer_node.id)))
-	pointer_node.quality = 1 if chance != 1 or param_node == root_node else 2
+	var chance := 1 == random_gen.randi_range(
+		1,max(max_rooms/4, max_rooms/2 - _depth_tool(pointer_node.id)))
+	pointer_node.quality = 1
 	var dir = [
 		pointer_node.id - 1, 
 		pointer_node.id + 1, 
 		pointer_node.id + border_size, 
-		pointer_node.id - border_size,].filter(filter_dir)
-	var children : Array[DungeonNode]
+		pointer_node.id - border_size,].filter(_filter_dir)
+	var children : Array[DungeonNode] = []
 	for i in range(0,dir.size()):
 		children.append(DungeonNode.new(dir[i],pointer_node.id))
 	pointer_node._add_children(children)
 	if(pointer_node.children.size() == 0):
 		pointer_node.quality = 2
-	if(pointer_node.quality > 1):
+	if(chance):
 		for i in range(0,dir.size()):
 			pointer_node.children[i]._lock()
 
@@ -47,17 +48,18 @@ func _generate():
 	var counter := 0
 	while(_fill_map() and counter < max_rooms):
 		counter+=1
-	if(counter < max_rooms):
-		return false
-	pointer_node.quality += 1
-	for i in range(0, pointer_node.children.size()):
-		pointer_node.children[i]._lock()
+	#if(counter < max_rooms):
+	#	print("FAILED")
+	#	return false
+	_cleanup_tool()
+	print(" ")
 	_generate_abstract()
+	
 	#_select_node(-border_size - 1)
 	return true
 
 func _select_able_child(param_node : DungeonNode):
-	var able_bodies : Array[int]
+	var able_bodies : Array[int] = []
 	for i in range(0,param_node.children.size()):
 		if(!param_node.children[i].locked):
 			able_bodies.append(param_node.children[i].id)
@@ -186,7 +188,7 @@ func _door_translate(direction : int) -> int:
 
 func _select_node(param_id := root_node.id, param_root := root_node):
 	for i in range(0,param_root.children.size()):
-		if(param_id == -border_size - 1):
+		if(param_id == -border_size - 1): #DEBUGGING CALL
 			var output = ""
 			for j in range(0,_depth_tool(param_root.id)):
 				output += "\t"
@@ -206,14 +208,17 @@ func _depth_tool(param_id := root_node.id, param_root := root_node):
 			return dist + 1
 	return dist
 
-func filter_dir(child_id_param : int):
-	var temp_var = pointer_node.id
-	if(child_id_param != pointer_node.parent_id # not parent 
-	and _select_node(child_id_param)): # and node exist
-		pointer_node._lock()
-		_select_node(temp_var)
-		return false
-	_select_node(temp_var)
+func _cleanup_tool(param_node := root_node):
+	var loser_children = true
+	for i in range(0,param_node.children.size()):
+		_cleanup_tool(param_node.children[i])
+		if(param_node.children[i].quality != 0):
+			loser_children = false
+	if(loser_children and param_node.children.size() != 0):
+		param_node.quality = 2
+	param_node._lock()
+
+func _filter_dir(child_id_param : int):
 	if(child_id_param == pointer_node.parent_id): # is parent
 		return false
 	if(child_id_param - 1 == pointer_node.id and  # wrapping
@@ -226,4 +231,11 @@ func filter_dir(child_id_param : int):
 		return false
 	if(child_id_param < 1): # underflow border
 		return false
+	var temp_var = pointer_node.id
+	if(child_id_param != pointer_node.parent_id # not parent 
+	and _select_node(child_id_param)): # and node exist
+		pointer_node._lock()
+		_select_node(temp_var)
+		return false
+	_select_node(temp_var)
 	return true
