@@ -10,6 +10,7 @@ extends Node3D
 
 func set_start(val:bool)->void:
 	var dungeon := Dungeon.new(border_size,space,seed)
+	generate(dungeon.convert_to_cords())
 	#visualize_border()
 	#make_room()
 
@@ -37,21 +38,20 @@ func visualize_border():
 
 func generate(dungeon_tree):
 	grid_map.clear()
-	for i in range(0, dungeon_tree.size()):
-		make_room(dungeon_tree[i])
+	for i in range(0, dungeon_tree.size()/3):
+		make_room(dungeon_tree[3*i],dungeon_tree[3*i+1],dungeon_tree[3*i+2])
 		await get_tree().create_timer(0.1).timeout 
 
-func make_room(param):
-	#print(str(param.id)+ " with quality "+str(param.quality) +" and is locked: "+ str(param.blocked))
+func make_room(x,y,q):
+	#print("("+str(x)+","+str(y)+")"+ " with quality "+str(q))
 	var pos : Vector3i
-	pos.x = param.id % border_size
-	pos.z = param.id / border_size
-	if(param.quality == 0 
-	and param.blocked):
-		grid_map.set_cell_item(pos,4)
-	elif(param.quality == 0):
+	pos.x = x
+	pos.z = y
+	if(q == 0):
 		grid_map.set_cell_item(pos,1)
-	elif(param.quality == 1):
+	elif(q == 1):
 		grid_map.set_cell_item(pos,3)
+	elif(q == -1):
+		grid_map.set_cell_item(pos,4)
 	else:
 		grid_map.set_cell_item(pos,2)

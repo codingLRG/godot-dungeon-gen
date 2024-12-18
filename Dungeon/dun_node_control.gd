@@ -26,7 +26,7 @@ space_param : int = 15, seed_param = ""):
 func _populate(param_node := root_node):
 	pointer_node = param_node
 	var chance := 1 == random_gen.randi_range(
-		1,max(max_rooms/4, max_rooms/2 - _depth_tool(pointer_node.id)))
+		1,max(2, max_rooms/2 - _depth_tool(pointer_node.id)))
 	pointer_node.quality = 1
 	var dir = [
 		pointer_node.id - 1, 
@@ -52,8 +52,8 @@ func _generate():
 	#	print("FAILED")
 	#	return false
 	_cleanup_tool()
-	print(" ")
-	_generate_abstract()
+	#print(" ")
+	#_generate_abstract()
 	
 	#_select_node(-border_size - 1)
 	return true
@@ -239,3 +239,11 @@ func _filter_dir(child_id_param : int):
 		return false
 	_select_node(temp_var)
 	return true
+
+func convert_to_cords(param_root := root_node):
+	var node_values := [(param_root.id-1)%border_size,(param_root.id-1)/border_size+1,param_root.quality]
+	var node_list := []
+	for i in range(0,param_root.children.size()):
+		node_values.append_array(convert_to_cords(param_root.children[i]))
+	return node_values
+	
