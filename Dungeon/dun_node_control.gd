@@ -37,7 +37,7 @@ func _populate(param_node := root_node):
 		children.append(DungeonNode.new(dir[i],pointer_node.id))
 	pointer_node._add_children(children)
 	if(pointer_node.children.size() == 0):
-		pointer_node.quality += 1
+		pointer_node.quality = 2
 	if(pointer_node.quality > 1):
 		for i in range(0,dir.size()):
 			pointer_node.children[i]._lock()
@@ -52,8 +52,8 @@ func _generate():
 	pointer_node.quality += 1
 	for i in range(0, pointer_node.children.size()):
 		pointer_node.children[i]._lock()
-	#_generate_abstract()
-	_select_node(-border_size - 1)
+	_generate_abstract()
+	#_select_node(-border_size - 1)
 	return true
 
 func _select_able_child(param_node : DungeonNode):
@@ -140,8 +140,10 @@ func _abs_door2(door : int, grid : int = 0):
 		wall += " "
 	elif(grid == 2):
 		wall += "o"
-	else:
+	elif(grid == -1):
 		wall += "x"
+	else:
+		wall += "?"
 	if(door & 0b0010 == 0b0010):
 		wall += " "
 	else:
