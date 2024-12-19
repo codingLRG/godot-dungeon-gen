@@ -9,7 +9,22 @@ extends Node3D
 @export var seed : String = "" : set = set_seed
 
 func set_start(val:bool)->void:
-	var dungeon := Dungeon.new(border_size,space,seed)
+	var random_gen = RandomNumberGenerator.new()
+	
+	if(seed):
+		random_gen.set_seed(seed.hash())
+		#print("SET SEED " + str(random_gen.get_seed()))
+	var dungeon := Dungeon.new(border_size,space,random_gen.randi())
+	var fail_counter = 0
+	while(!dungeon.generated and fail_counter < 100):
+		dungeon = Dungeon.new(border_size,space,random_gen.randi())
+		fail_counter += 1
+	if fail_counter == 100:
+		print("BROKE")
+	var test : Array= dungeon.convert_to_cords()
+	#for i in range(0,test.size()):
+	#	var temp = test[i]
+	#	print(temp[0])
 	generate(dungeon.convert_to_cords())
 	#visualize_border()
 	#make_room()
@@ -38,17 +53,23 @@ func visualize_border():
 
 func generate(dungeon_tree):
 	grid_map.clear()
-	for i in range(0, dungeon_tree.size()/3):
-		make_room(dungeon_tree[3*i],dungeon_tree[3*i+1],dungeon_tree[3*i+2])
-		await get_tree().create_timer(0.1).timeout 
+	await get_tree().create_timer(0.3).timeout 
+	for i in range(0, dungeon_tree.size()):
+		var list :Dun_Conv = dungeon_tree[i]
+		#if(list.quality != 0):
+		make_room(list.x_axis,list.y_axis,list.quality,list.locked)
+			#await get_tree().create_timer(0.05).timeout 
 
-func make_room(x,y,q):
+func make_room(x,y,q,l):
 	#print("("+str(x)+","+str(y)+")"+ " with quality "+str(q))
 	var pos : Vector3i
 	pos.x = x
 	pos.z = y
 	if(q == 0):
-		grid_map.set_cell_item(pos,1)
+		if(!l):
+			grid_map.set_cell_item(pos,1)
+		else:
+			grid_map.set_cell_item(pos,0)
 	elif(q == 1):
 		grid_map.set_cell_item(pos,3)
 	elif(q == -1):

@@ -10,11 +10,13 @@ var random_gen = RandomNumberGenerator.new()
 var dun_seed : int
 var generated : bool
 
-func _init(border_param : int = 5, 
-space_param : int = 15, seed_param = ""):
+func _init(border_param : int, 
+space_param : int, seed_param : int):
 	self.border_size = border_param
-	self.max_rooms = space_param - 2
-	dun_seed = seed_param.hash() if seed_param else randi()
+	self.max_rooms = space_param
+	dun_seed = seed_param
+	#print(dun_seed)
+	random_gen.set_seed(dun_seed)
 	seed(dun_seed)
 	var even_param : int = [border_param,border_param+1,1,0].pick_random()
 	var starting_local : int = (border_param**2)/2+1 if border_param % 2 == 1 else (border_param**2 - border_param)/2 + even_param
@@ -25,7 +27,8 @@ space_param : int = 15, seed_param = ""):
 
 func _populate(param_node := root_node):
 	pointer_node = param_node
-	var chance := 1 == random_gen.randi_range(
+	var restart := false
+	var chance := random_gen.randi_range(
 		1,max(2, max_rooms/2 - _depth_tool(pointer_node.id)))
 	pointer_node.quality = 1
 	var dir = [
@@ -39,18 +42,21 @@ func _populate(param_node := root_node):
 	pointer_node._add_children(children)
 	if(pointer_node.children.size() == 0):
 		pointer_node.quality = 2
-	if(chance):
+	if(chance < 3):
 		for i in range(0,dir.size()):
 			pointer_node.children[i]._lock()
+		if(chance == 1):
+			restart = true
+	return restart
 
 func _generate():
 	_select_able_child(pointer_node)
 	var counter := 0
 	while(_fill_map() and counter < max_rooms):
 		counter+=1
-	#if(counter < max_rooms):
-	#	print("FAILED")
-	#	return false
+	if(counter < max_rooms):
+		root_node = DungeonNode.new(-1)
+		return false
 	_cleanup_tool()
 	#print(" ")
 	#_generate_abstract()
@@ -69,7 +75,9 @@ func _select_able_child(param_node : DungeonNode):
 	return false
 
 func _fill_map():
-	_populate(pointer_node)
+	if(_populate(pointer_node)):
+		#print("HELLO")
+		pointer_node = root_node
 	while(!_select_able_child(pointer_node)):
 		pointer_node._lock()
 		if(!_select_node(pointer_node.parent_id)):
@@ -216,7 +224,7 @@ func _cleanup_tool(param_node := root_node):
 			loser_children = false
 	if(loser_children and param_node.children.size() != 0):
 		param_node.quality = 2
-	param_node._lock()
+		param_node._lock()
 
 func _filter_dir(child_id_param : int):
 	if(child_id_param == pointer_node.parent_id): # is parent
@@ -241,9 +249,10 @@ func _filter_dir(child_id_param : int):
 	return true
 
 func convert_to_cords(param_root := root_node):
-	var node_values := [(param_root.id-1)%border_size,(param_root.id-1)/border_size+1,param_root.quality]
-	var node_list := []
+	var temp := Dun_Conv.new((param_root.id-1)%border_size,(param_root.id-1)/border_size+1,param_root.quality,param_root.locked)
+	var node_values := []
+	node_values.append(temp)
 	for i in range(0,param_root.children.size()):
 		node_values.append_array(convert_to_cords(param_root.children[i]))
 	return node_values
-	
+	#node_list.append(obj)
