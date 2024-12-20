@@ -9,10 +9,14 @@ var max_rooms : int
 var random_gen = RandomNumberGenerator.new()
 var dun_seed : int
 var generated : bool
+var debuggingTrigger : int
+var max_depth : int
+var most_locked : int
 
 func _init(border_param : int, 
 space_param : int, seed_param : int):
 	self.border_size = border_param
+	self.debuggingTrigger = -border_size - 1
 	self.max_rooms = space_param
 	dun_seed = seed_param
 	#print(dun_seed)
@@ -58,10 +62,11 @@ func _generate():
 		root_node = DungeonNode.new(-1)
 		return false
 	_cleanup_tool()
+	_create_boss(find_farthest_nodes(2).pick_random())
+	_create_secret(find_most_locked().pick_random())
 	#print(" ")
 	#_generate_abstract()
-	
-	#_select_node(-border_size - 1)
+	#_select_node(debuggingTrigger)
 	return true
 
 func _select_able_child(param_node : DungeonNode):
@@ -196,18 +201,18 @@ func _door_translate(direction : int) -> int:
 
 func _select_node(param_id := root_node.id, param_root := root_node):
 	for i in range(0,param_root.children.size()):
-		if(param_id == -border_size - 1): #DEBUGGING CALL
+		if(param_id == debuggingTrigger and param_root.children[i].quality == 2): #DEBUGGING CALL
 			var output = ""
 			for j in range(0,_depth_tool(param_root.id)):
 				output += "\t"
-			print(output+"PARENT: "+str(param_root.id)+ " CHILD: "+str(param_root.children[i].id)+"("+str(param_root.children[i].children.size())+")")
+			print(output+"PARENT: "+(convert_these_cords([param_root])[0].print())+ " CHILD: "+(convert_these_cords([param_root.children[i]])[0].print())+"("+str(param_root.children[i].children.size())+")")
 		if(_select_node(param_id,param_root.children[i])):
 			return true
 	pointer_node = param_root
 	return param_id == param_root.id
 
-func _depth_tool(param_id := root_node.id, param_root := root_node):
-	var dist = -1
+func _depth_tool(param_id := root_node.id, param_root := root_node)->int:
+	var dist := -1
 	if(param_id == param_root.id):
 		return dist + 1
 	for i in range(0,param_root.children.size()):
@@ -248,11 +253,84 @@ func _filter_dir(child_id_param : int):
 	_select_node(temp_var)
 	return true
 
-func convert_to_cords(param_root := root_node):
-	var temp := Dun_Conv.new((param_root.id-1)%border_size,(param_root.id-1)/border_size+1,param_root.quality,param_root.locked)
-	var node_values := []
+func _create_boss(param_root : DungeonNode):
+	pointer_node = param_root
+	pointer_node.quality = 3
+	var dir = [
+		param_root.id - 1, 
+		param_root.id + 1, 
+		param_root.id + border_size, 
+		param_root.id - border_size,].filter(_filter_boss)
+	pointer_node.children = []
+	for i  in range(0,dir.size()):
+		_select_node(dir[i])
+		_select_node(pointer_node.parent_id)
+		pointer_node.children = pointer_node.children.filter(func(element : DungeonNode): return element.id != dir[i])
+
+func _filter_boss(param_int : int):
+	if(param_int == pointer_node.parent_id):
+		return false
+	for i in range(0, pointer_node.children.size()):
+		if(pointer_node.children[i].id == param_int):
+			return false
+	return true
+
+func _create_secret(param_root : DungeonNode):
+	param_root.quality = 4
+	
+
+func find_most_locked(param_root := root_node, param_lock := -1, 
+param_arr : Array[DungeonNode] = []):
+	param_lock = param_root.lock_count
+	if(param_root.quality == 0):
+		if(param_lock == most_locked):
+			param_arr.append(param_root)
+		elif(param_lock > most_locked):
+			#print(convert_these_cords([param_root])[0].print())
+			most_locked = param_lock
+			param_arr = [param_root]
+	for i in range(0,param_root.children.size()):
+		param_arr = find_most_locked(param_root.children[i],
+			param_lock,param_arr)
+	return param_arr
+
+
+func convert_to_cords(param_root := root_node)->Array[Dun_Conv]:
+	var temp := Dun_Conv.new(
+		(param_root.id-1)%border_size,
+		(param_root.id-1)/border_size,
+		param_root.quality,
+		param_root.locked)
+	var node_values :Array[Dun_Conv]= []
 	node_values.append(temp)
 	for i in range(0,param_root.children.size()):
-		node_values.append_array(convert_to_cords(param_root.children[i]))
+		node_values.append_array(
+			convert_to_cords(param_root.children[i]))
 	return node_values
 	#node_list.append(obj)
+
+func convert_these_cords(param_list : Array[DungeonNode]):
+	var node_values := []
+	for i in range(0,param_list.size()):
+		var temp := Dun_Conv.new(
+			(param_list[i].id-1)%border_size,
+			(param_list[i].id-1)/border_size,
+			param_list[i].quality,
+			param_list[i].locked)
+		node_values.append(temp)
+	return node_values
+
+func find_farthest_nodes(param_qual : int, param_root := root_node, param_depth := -1, 
+param_arr : Array[DungeonNode] = [])->Array[DungeonNode]:
+	param_depth = _depth_tool(param_root.id)
+	if(param_root.quality == param_qual):
+		if(param_depth == max_depth):
+			param_arr.append(param_root)
+		elif(param_depth > max_depth):
+			#print(convert_these_cords([param_root])[0].print())
+			max_depth = param_depth
+			param_arr = [param_root]
+	for i in range(0,param_root.children.size()):
+		param_arr = find_farthest_nodes(param_qual, param_root.children[i],
+			param_depth,param_arr)
+	return param_arr

@@ -10,3 +10,8 @@ func _init(param_x,param_y,param_q,param_l):
 	y_axis = param_y
 	quality = param_q
 	locked = param_l
+
+func print()->String:
+	var str = "[" + str(x_axis) +", " + str(y_axis) + "]"
+	return str
+	

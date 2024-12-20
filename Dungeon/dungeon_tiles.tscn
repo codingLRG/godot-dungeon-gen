@@ -1,9 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://bhqnfq51dpb54"]
+[gd_scene load_steps=11 format=3 uid="uid://bhqnfq51dpb54"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_awc88"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qjign"]
-albedo_color = Color(0.792157, 0.0784314, 0.141176, 1)
+albedo_color = Color(0.682353, 0.0784314, 0.141176, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_feeq4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_md6dc"]
+albedo_color = Color(0, 0.0784314, 0.141176, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tfhra"]
 albedo_color = Color(0.3294, 0.54, 0.52947, 1)
@@ -13,8 +18,13 @@ albedo_color = Color(1, 1, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dmqf7"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d65kw"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e5qfp"]
 albedo_color = Color(1, 0.4, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_nlmd8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v6rfw"]
+albedo_color = Color(0.35727, 0.810378, 0.136386, 1)
 
 [node name="Dungeon Tiles" type="Node3D"]
 
@@ -22,6 +32,11 @@ albedo_color = Color(1, 0.4, 1, 1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.16247, 0, 0)
 mesh = SubResource("BoxMesh_awc88")
 surface_material_override/0 = SubResource("StandardMaterial3D_qjign")
+
+[node name="Boss Tile" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.81729, 0, 0)
+mesh = SubResource("BoxMesh_feeq4")
+surface_material_override/0 = SubResource("StandardMaterial3D_md6dc")
 
 [node name="FOW Tile" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.53735, 0, 0)
@@ -38,7 +53,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.46919, 0, 0)
 mesh = SubResource("BoxMesh_awc88")
 surface_material_override/0 = SubResource("StandardMaterial3D_dmqf7")
 
-[node name="Locked Tile" type="MeshInstance3D" parent="."]
+[node name="Starting Tile" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.12859, 0, 0)
 mesh = SubResource("BoxMesh_awc88")
-surface_material_override/0 = SubResource("StandardMaterial3D_d65kw")
+surface_material_override/0 = SubResource("StandardMaterial3D_e5qfp")
+
+[node name="Secret Tile" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.93438, 0, 0)
+mesh = SubResource("BoxMesh_nlmd8")
+surface_material_override/0 = SubResource("StandardMaterial3D_v6rfw")

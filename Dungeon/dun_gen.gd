@@ -21,11 +21,13 @@ func set_start(val:bool)->void:
 		fail_counter += 1
 	if fail_counter == 100:
 		print("BROKE")
-	var test : Array= dungeon.convert_to_cords()
 	#for i in range(0,test.size()):
 	#	var temp = test[i]
 	#	print(temp[0])
 	generate(dungeon.convert_to_cords())
+	#var dun = dungeon.convert_these_cords(dungeon.find_most_locked())
+	#for i in range(0,dun.size()):
+	#	print(dun[i].print())
 	#visualize_border()
 	#make_room()
 
@@ -58,21 +60,25 @@ func generate(dungeon_tree):
 		var list :Dun_Conv = dungeon_tree[i]
 		#if(list.quality != 0):
 		make_room(list.x_axis,list.y_axis,list.quality,list.locked)
-			#await get_tree().create_timer(0.05).timeout 
+		await get_tree().create_timer(0.05).timeout 
 
 func make_room(x,y,q,l):
 	#print("("+str(x)+","+str(y)+")"+ " with quality "+str(q))
 	var pos : Vector3i
 	pos.x = x
 	pos.z = y
-	if(q == 0):
+	if(q == -1):
+		grid_map.set_cell_item(pos,5)
+	elif(q == 0):
 		if(!l):
-			grid_map.set_cell_item(pos,1)
+			grid_map.set_cell_item(pos,2)
 		else:
 			grid_map.set_cell_item(pos,0)
 	elif(q == 1):
-		grid_map.set_cell_item(pos,3)
-	elif(q == -1):
 		grid_map.set_cell_item(pos,4)
+	elif(q == 3):
+		grid_map.set_cell_item(pos,1)
+	elif(q == 4):
+		grid_map.set_cell_item(pos,6)
 	else:
-		grid_map.set_cell_item(pos,2)
+		grid_map.set_cell_item(pos,3)
