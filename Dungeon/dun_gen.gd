@@ -58,9 +58,9 @@ func generate(dungeon_tree):
 	await get_tree().create_timer(0.3).timeout 
 	for i in range(0, dungeon_tree.size()):
 		var list :Dun_Conv = dungeon_tree[i]
-		#if(list.quality != 0):
-		make_room(list.x_axis,list.y_axis,list.quality,list.locked)
-		await get_tree().create_timer(0.05).timeout 
+		if(list.quality != 0):
+			make_room(list.x_axis,list.y_axis,list.quality,list.locked)
+			await get_tree().create_timer(0.05).timeout 
 
 func make_room(x,y,q,l):
 	#print("("+str(x)+","+str(y)+")"+ " with quality "+str(q))

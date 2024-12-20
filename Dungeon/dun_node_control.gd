@@ -62,8 +62,12 @@ func _generate():
 		root_node = DungeonNode.new(-1)
 		return false
 	_cleanup_tool()
+	
 	_create_boss(find_farthest_nodes(2).pick_random())
-	_create_secret(find_most_locked().pick_random())
+	var secret_room_num := random_gen.randi_range(2,max_rooms/20)
+	for i in range(0,secret_room_num):
+		_create_secret(find_most_locked().pick_random())
+		
 	#print(" ")
 	#_generate_abstract()
 	#_select_node(debuggingTrigger)
@@ -276,11 +280,12 @@ func _filter_boss(param_int : int):
 	return true
 
 func _create_secret(param_root : DungeonNode):
+	most_locked = -1
 	param_root.quality = 4
 	
 
 func find_most_locked(param_root := root_node, param_lock := -1, 
-param_arr : Array[DungeonNode] = []):
+param_arr : Array[DungeonNode] = []) -> Array[DungeonNode]:
 	param_lock = param_root.lock_count
 	if(param_root.quality == 0):
 		if(param_lock == most_locked):
