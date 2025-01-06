@@ -6,13 +6,13 @@ extends Node3D
 @export var test_run : bool = false : set = set_start
 @export var border_size : int = 20 : set = set_border_size
 @export var space : int = 10 : set = set_space
-@export var seed : String = "" : set = set_seed
+@export var dun_seed : String = "" : set = set_seed
 
 func set_start(val:bool)->void:
 	var random_gen = RandomNumberGenerator.new()
 	
-	if(seed):
-		random_gen.set_seed(seed.hash())
+	if(dun_seed):
+		random_gen.set_seed(dun_seed.hash())
 		#print("SET SEED " + str(random_gen.get_seed()))
 	var dungeon := Dungeon.new(border_size,space,random_gen.randi())
 	var fail_counter = 0
@@ -43,7 +43,7 @@ func set_space(val : int)->void:
 		visualize_border()
 
 func set_seed(val : String)->void:
-	seed = val
+	dun_seed = val
 
 func visualize_border():
 	grid_map.clear()
@@ -65,8 +65,8 @@ func generate(dungeon_tree):
 func make_room(x,y,q,l):
 	#print("("+str(x)+","+str(y)+")"+ " with quality "+str(q))
 	var pos : Vector3i
-	pos.x = x
-	pos.z = y
+	pos.x = x*7
+	pos.z = y*7
 	if(q == -1):
 		grid_map.set_cell_item(pos,5)
 	elif(q == 0):

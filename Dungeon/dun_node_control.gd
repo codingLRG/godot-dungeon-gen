@@ -69,7 +69,7 @@ func _generate():
 		_create_secret(find_most_locked().pick_random())
 		
 	#print(" ")
-	#_generate_abstract()
+	_generate_abstract()
 	#_select_node(debuggingTrigger)
 	return true
 
@@ -301,11 +301,18 @@ param_arr : Array[DungeonNode] = []) -> Array[DungeonNode]:
 
 
 func convert_to_cords(param_root := root_node)->Array[Dun_Conv]:
+	var entrance : int = _door_translate(param_root.parent_id - param_root.id) if param_root.parent_id != -1 else null
+	var exit : int 
+	for i in range(0, param_root.children.size()):
+		if param_root.children[i].quality != 0:
+			exit += _door_translate(param_root.children[i].id-param_root.id)
 	var temp := Dun_Conv.new(
 		(param_root.id-1)%border_size,
 		(param_root.id-1)/border_size,
 		param_root.quality,
-		param_root.locked)
+		param_root.locked,
+		entrance,
+		exit)
 	var node_values :Array[Dun_Conv]= []
 	node_values.append(temp)
 	for i in range(0,param_root.children.size()):
@@ -321,7 +328,9 @@ func convert_these_cords(param_list : Array[DungeonNode]):
 			(param_list[i].id-1)%border_size,
 			(param_list[i].id-1)/border_size,
 			param_list[i].quality,
-			param_list[i].locked)
+			param_list[i].locked,
+			null,
+			null)
 		node_values.append(temp)
 	return node_values
 
