@@ -1,12 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://67qn125vnlrt"]
+[gd_scene load_steps=15 format=3 uid="uid://67qn125vnlrt"]
 
 [ext_resource type="Script" path="res://TestGrounds/CharacterBody3D.gd" id="1_dka3j"]
 [ext_resource type="Texture2D" uid="uid://6s6eld615tuy" path="res://TestGrounds/Textures/SANS.png" id="2_62ya5"]
 [ext_resource type="Texture2D" uid="uid://bc3trhsk8hcnq" path="res://TestGrounds/Textures/gravel_embedded_concrete_diff_1k.jpg" id="2_ghvhp"]
 [ext_resource type="Texture2D" uid="uid://dqm07tjmpgvrp" path="res://TestGrounds/Textures/rusty_metal_03_diff_1k.jpg" id="3_aum2d"]
 [ext_resource type="Script" path="res://TestGrounds/InteractRay.gd" id="3_dc7aq"]
-[ext_resource type="PackedScene" uid="uid://bb542r4ysussq" path="res://TestGrounds/Items/Weapon.tscn" id="6_n5d6u"]
-[ext_resource type="Resource" uid="uid://d0c0wd0lueesi" path="res://TestGrounds/Items/Crowbar.res" id="7_ap7yt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kgy1w"]
 sky_top_color = Color(0.327476, 0.620688, 0.797531, 1)
@@ -78,15 +76,9 @@ collision_mask = 9
 collide_with_areas = true
 script = ExtResource("3_dc7aq")
 
-[node name="Main Weapon" parent="CharacterBody3D/Neck/Camera3D" instance=ExtResource("6_n5d6u")]
-transform = Transform3D(1, 0, 0, 0, 0.211222, -0.977438, 0, 0.977438, 0.211222, 0.660134, -0.259646, -0.778349)
-freeze = true
-
 [node name="Test Floor" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.03237, -0.523774, -3.165)
 use_collision = true
-collision_layer = 3
-collision_mask = 0
 size = Vector3(58.1986, 0.001, 102.598)
 material = SubResource("StandardMaterial3D_dj7w0")
 
@@ -103,18 +95,3 @@ material = SubResource("StandardMaterial3D_4a562")
 [node name="CSGBox3D" type="CSGBox3D" parent="Test Floor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.5, -51.1313)
 size = Vector3(58, 4, 1)
-
-[node name="Weapon" parent="." instance=ExtResource("6_n5d6u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.835917, 0.476726, -2.36501)
-freeze = true
-WEAPON_RESOURCE = ExtResource("7_ap7yt")
-
-[node name="Weapon2" parent="." instance=ExtResource("6_n5d6u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49224, 0.476726, -2.82575)
-freeze = true
-WEAPON_RESOURCE = ExtResource("7_ap7yt")
-
-[node name="Weapon3" parent="." instance=ExtResource("6_n5d6u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.50776, 0.476726, -2.82575)
-freeze = true
-WEAPON_RESOURCE = ExtResource("7_ap7yt")

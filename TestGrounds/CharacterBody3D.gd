@@ -11,11 +11,16 @@ var t_bob := 0.0
 const BASE_FOV = 75.0
 const FOV_CHANGE = 1.5
 
+var init_weapon = preload("res://TestGrounds/Items/Weapon.tscn")
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var neck := $Neck
 @onready var camera := $Neck/Camera3D
+
+func _ready():
+	SignalBus.equip_signal.connect(_equip_item)
+	pass
 
 func _unhandled_input(event: InputEvent)->void:
 	if event is InputEventMouseButton:
@@ -27,6 +32,8 @@ func _unhandled_input(event: InputEvent)->void:
 			neck.rotate_y(-event.relative.x*0.003)
 			camera.rotate_x(-event.relative.y*0.003)
 			camera.rotation.x = clamp(camera.rotation.x,deg_to_rad(-80),deg_to_rad(90))
+	if event.is_action_pressed("drop") and GlobalVar.equipped_weapon != null:
+		_drop_item()
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -74,3 +81,19 @@ func _headbob(input) -> Vector3:
 	pos.y = sin(input * BOB_FREQ) * BOB_AMP
 	pos.x = cos(input * BOB_FREQ/2) * BOB_AMP
 	return pos
+	
+func _drop_item():
+	var weapon = $"Neck/Camera3D/Main Weapon"
+	var world = get_node(".").get_parent()
+	var dropped_weapon : Weapon = init_weapon.instantiate()
+	dropped_weapon.WEAPON_RESOURCE = GlobalVar.equipped_weapon
+	world.add_child(dropped_weapon)
+	dropped_weapon.dropped = true
+	dropped_weapon.global_transform = weapon.global_transform
+	GlobalVar.equipped_weapon = null
+	_equip_item()
+	
+
+func _equip_item():
+	var weapon = $"Neck/Camera3D/Main Weapon"
+	weapon.equip_weapon(GlobalVar.equipped_weapon, true)	

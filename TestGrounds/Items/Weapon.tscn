@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bb542r4ysussq"]
+
+[ext_resource type="Script" path="res://TestGrounds/Items/interaction_area_component.gd" id="1_v5s6t"]
+[ext_resource type="Script" path="res://TestGrounds/Items/weapon_init.gd" id="1_w1h4u"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5lvwj"]
+
+[node name="Weapon" type="RigidBody3D"]
+script = ExtResource("1_w1h4u")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+
+[node name="P_Hitbox" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Interaction_Area" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_v5s6t")
+i_hitbox_shape = SubResource("BoxShape3D_5lvwj")
+
+[connection signal="interacted" from="Interaction_Area" to="." method="_on_interaction_area_interacted"]

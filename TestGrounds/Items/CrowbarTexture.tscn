@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://cdaothelt0awc"]
+
+[ext_resource type="PackedScene" uid="uid://bocgifa5w7r1w" path="res://TestGrounds/Textures/Crowbar Textured.glb" id="1_q1jjw"]
+
+[node name="Crowbar Textured" instance=ExtResource("1_q1jjw")]

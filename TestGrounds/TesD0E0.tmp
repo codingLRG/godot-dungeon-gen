@@ -118,3 +118,5 @@ WEAPON_RESOURCE = ExtResource("7_ap7yt")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.50776, 0.476726, -2.82575)
 freeze = true
 WEAPON_RESOURCE = ExtResource("7_ap7yt")
+
+[connection signal="equipped" from="CharacterBody3D/Neck/Camera3D/Main Weapon" to="CharacterBody3D" method="_on_main_weapon_equipped"]

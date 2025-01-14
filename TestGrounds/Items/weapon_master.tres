@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WEAPON_TYPE" load_steps=2 format=3 uid="uid://clmc34q8ml22o"]
+
+[ext_resource type="Script" path="res://TestGrounds/Items/weapon_master.gd" id="1_vp0q0"]
+
+[resource]
+script = ExtResource("1_vp0q0")
+weapon_name = &""
