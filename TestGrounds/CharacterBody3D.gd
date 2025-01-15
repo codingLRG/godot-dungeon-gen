@@ -33,7 +33,8 @@ func _unhandled_input(event: InputEvent)->void:
 			camera.rotate_x(-event.relative.y*0.003)
 			camera.rotation.x = clamp(camera.rotation.x,deg_to_rad(-80),deg_to_rad(90))
 	if event.is_action_pressed("drop") and GlobalVar.equipped_weapon != null:
-		_drop_item()
+		#_drop_item()
+		spawn_gun()
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -84,16 +85,23 @@ func _headbob(input) -> Vector3:
 	
 func _drop_item():
 	var weapon = $"Neck/Camera3D/Main Weapon"
-	var world = get_node(".").get_parent()
+	var world = get_parent()
 	var dropped_weapon : Weapon = init_weapon.instantiate()
 	dropped_weapon.WEAPON_RESOURCE = GlobalVar.equipped_weapon
 	world.add_child(dropped_weapon)
-	dropped_weapon.dropped = true
+	dropped_weapon.drop_weapon()
 	dropped_weapon.global_transform = weapon.global_transform
 	GlobalVar.equipped_weapon = null
 	_equip_item()
-	
 
+func spawn_gun():
+	print("LOL")
+	var resource : WEAPON_TYPE = load("uid://d0c0wd0lueesi")
+	var gun = Weapon.spawn_new(resource, self.transform.basis, neck.transform.origin, Vector3(1,1,1))
+	var world = get_parent()
+	GlobalVar.equipped_weapon = null
+	_equip_item()
+	world.add_child(gun)
 func _equip_item():
 	var weapon = $"Neck/Camera3D/Main Weapon"
 	weapon.equip_weapon(GlobalVar.equipped_weapon, true)	
