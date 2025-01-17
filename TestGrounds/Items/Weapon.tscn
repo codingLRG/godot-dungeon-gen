@@ -1,24 +1,44 @@
-[gd_scene load_steps=4 format=3 uid="uid://bb542r4ysussq"]
+[gd_scene load_steps=7 format=3 uid="uid://bb542r4ysussq"]
 
 [ext_resource type="Script" path="res://TestGrounds/Items/interaction_area_component.gd" id="1_v5s6t"]
 [ext_resource type="Script" path="res://TestGrounds/Items/weapon_init.gd" id="1_w1h4u"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_5lvwj"]
+[ext_resource type="Resource" uid="uid://d0c0wd0lueesi" path="res://TestGrounds/Items/Crowbar.res" id="2_4wql5"]
+[ext_resource type="ArrayMesh" uid="uid://lyvljfysa22v" path="res://TestGrounds/Items/crowbarMesh.mesh" id="3_2qlrg"]
+[ext_resource type="Script" path="res://TestGrounds/Items/throw_area_component.gd" id="3_4pxwu"]
+[ext_resource type="Shape3D" uid="uid://dgm11wpl64l4q" path="res://TestGrounds/Items/crowbar_h.shape" id="4_x3fw2"]
 
 [node name="Weapon" type="RigidBody3D"]
+can_sleep = false
 script = ExtResource("1_w1h4u")
+WEAPON_RESOURCE = ExtResource("2_4wql5")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
+mesh = ExtResource("3_2qlrg")
 
 [node name="P_Hitbox" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true
+shape = ExtResource("4_x3fw2")
 
 [node name="Interaction_Area" type="Area3D" parent="."]
+unique_name_in_owner = true
 collision_layer = 8
 collision_mask = 0
 monitoring = false
+monitorable = false
 script = ExtResource("1_v5s6t")
-i_hitbox_shape = SubResource("BoxShape3D_5lvwj")
 
-[connection signal="interacted" from="Interaction_Area" to="." method="_on_interaction_area_interacted"]
+[node name="I_Hitbox" type="CollisionShape3D" parent="Interaction_Area"]
+unique_name_in_owner = true
+
+[node name="Throwable" type="Area3D" parent="."]
+unique_name_in_owner = true
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+monitorable = false
+script = ExtResource("3_4pxwu")
+
+[node name="T_Hitbox" type="CollisionShape3D" parent="Throwable"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -0.000174566, -1, 0, 1, -0.000174566, 0, 0, 0)

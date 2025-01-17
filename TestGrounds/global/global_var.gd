@@ -1,7 +1,7 @@
 extends Node
 
 var queue_for_removal : Array[Node]
-var equipped_weapon : WEAPON_TYPE
+var equipped_weapon : WEAPON_TYPE = null
 
 
 func clear_queue():

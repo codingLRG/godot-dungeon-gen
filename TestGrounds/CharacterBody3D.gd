@@ -13,13 +13,14 @@ const FOV_CHANGE = 1.5
 
 var init_weapon = preload("res://TestGrounds/Items/Weapon.tscn")
 
+
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var neck := $Neck
 @onready var camera := $Neck/Camera3D
-
+@onready var hand := $"Neck/Equipped Weapon"
 func _ready():
-	SignalBus.equip_signal.connect(_equip_item)
+	#SignalBus.equip_signal.connect(_equip_item)
 	pass
 
 func _unhandled_input(event: InputEvent)->void:
@@ -32,9 +33,10 @@ func _unhandled_input(event: InputEvent)->void:
 			neck.rotate_y(-event.relative.x*0.003)
 			camera.rotate_x(-event.relative.y*0.003)
 			camera.rotation.x = clamp(camera.rotation.x,deg_to_rad(-80),deg_to_rad(90))
-	if event.is_action_pressed("drop") and GlobalVar.equipped_weapon != null:
-		#_drop_item()
-		spawn_gun()
+	if event.is_action_pressed("drop") and hand.get_child_count() != 0:
+		_drop_item()
+		print("HAH")
+		pass
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -84,24 +86,16 @@ func _headbob(input) -> Vector3:
 	return pos
 	
 func _drop_item():
-	var weapon = $"Neck/Camera3D/Main Weapon"
 	var world = get_parent()
-	var dropped_weapon : Weapon = init_weapon.instantiate()
-	dropped_weapon.WEAPON_RESOURCE = GlobalVar.equipped_weapon
-	world.add_child(dropped_weapon)
-	dropped_weapon.drop_weapon()
-	dropped_weapon.global_transform = weapon.global_transform
-	GlobalVar.equipped_weapon = null
-	_equip_item()
+	var weapon : Weapon = hand.get_child(0)
+	weapon.reparent(world)
+	weapon.unequipped()
+	#_equip_item()
 
-func spawn_gun():
-	print("LOL")
-	var resource : WEAPON_TYPE = load("uid://d0c0wd0lueesi")
-	var gun = Weapon.spawn_new(resource, self.transform.basis, neck.transform.origin, Vector3(1,1,1))
-	var world = get_parent()
-	GlobalVar.equipped_weapon = null
-	_equip_item()
-	world.add_child(gun)
-func _equip_item():
-	var weapon = $"Neck/Camera3D/Main Weapon"
-	weapon.equip_weapon(GlobalVar.equipped_weapon, true)	
+func _on_interact_ray_player_update(object):
+	print(object.get_parent())
+	if object is Weapon:
+		object.reparent(hand)
+		object.equipped()
+	pass # Replace with function body.
+	print(object.get_parent())

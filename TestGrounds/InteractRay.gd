@@ -1,14 +1,12 @@
 extends RayCast3D
 
 var previous_interact : Node
+signal player_update(object)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var current_interact = get_collider()
 	# if the collider hasn't detected anything new, ignore all these processes in order to save on memory
-	if not current_interact:
-		print_orphan_nodes()
-		GlobalVar.clear_queue()
 	if current_interact != previous_interact:
 		if previous_interact != null and previous_interact.has_signal("off_hover"):
 			previous_interact.emit_signal("off_hover")
@@ -22,3 +20,4 @@ func _process(delta):
 func _interaction():
 	if previous_interact != null and previous_interact.has_signal("interacted"):
 		previous_interact.emit_signal("interacted")
+		player_update.emit(previous_interact.get_parent())
