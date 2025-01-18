@@ -1,5 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://cdaothelt0awc"]
+[gd_scene load_steps=4 format=3 uid="uid://cdaothelt0awc"]
 
 [ext_resource type="PackedScene" uid="uid://bocgifa5w7r1w" path="res://TestGrounds/Textures/Crowbar Textured.glb" id="1_q1jjw"]
+[ext_resource type="ArrayMesh" uid="uid://dc2kf7kwi2ly6" path="res://TestGrounds/Items/Mesh/shotgunMesh.mesh" id="2_3g7iu"]
+[ext_resource type="Shape3D" uid="uid://cqo17kfhet07b" path="res://TestGrounds/Items/shotgun_h.shape" id="3_mtg74"]
 
 [node name="Crowbar Textured" instance=ExtResource("1_q1jjw")]
+
+[node name="Crowbar" parent="." index="0"]
+mesh = ExtResource("2_3g7iu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1"]
+shape = ExtResource("3_mtg74")

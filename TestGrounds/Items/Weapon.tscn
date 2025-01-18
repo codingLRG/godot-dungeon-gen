@@ -2,19 +2,19 @@
 
 [ext_resource type="Script" path="res://TestGrounds/Items/interaction_area_component.gd" id="1_v5s6t"]
 [ext_resource type="Script" path="res://TestGrounds/Items/weapon_init.gd" id="1_w1h4u"]
-[ext_resource type="Resource" uid="uid://d0c0wd0lueesi" path="res://TestGrounds/Items/Crowbar.res" id="2_4wql5"]
-[ext_resource type="ArrayMesh" uid="uid://lyvljfysa22v" path="res://TestGrounds/Items/crowbarMesh.mesh" id="3_2qlrg"]
 [ext_resource type="Script" path="res://TestGrounds/Items/throw_area_component.gd" id="3_4pxwu"]
+[ext_resource type="ArrayMesh" uid="uid://lyvljfysa22v" path="res://TestGrounds/Items/Mesh/crowbarMesh.mesh" id="3_e50n1"]
 [ext_resource type="Shape3D" uid="uid://dgm11wpl64l4q" path="res://TestGrounds/Items/crowbar_h.shape" id="4_x3fw2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rlh17"]
 
 [node name="Weapon" type="RigidBody3D"]
 can_sleep = false
 script = ExtResource("1_w1h4u")
-WEAPON_RESOURCE = ExtResource("2_4wql5")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
-mesh = ExtResource("3_2qlrg")
+mesh = ExtResource("3_e50n1")
 
 [node name="P_Hitbox" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true
@@ -30,6 +30,7 @@ script = ExtResource("1_v5s6t")
 
 [node name="I_Hitbox" type="CollisionShape3D" parent="Interaction_Area"]
 unique_name_in_owner = true
+shape = SubResource("BoxShape3D_rlh17")
 
 [node name="Throwable" type="Area3D" parent="."]
 unique_name_in_owner = true

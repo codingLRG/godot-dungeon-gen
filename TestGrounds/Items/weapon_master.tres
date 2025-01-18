@@ -5,3 +5,5 @@
 [resource]
 script = ExtResource("1_vp0q0")
 weapon_name = &""
+position = Vector3(0, 0, 0)
+rotation = Vector3(0, 0, 0)

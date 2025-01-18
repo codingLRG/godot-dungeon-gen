@@ -9,6 +9,7 @@ var disabled : bool = false
 var parent : Node
 var mesh : MeshInstance3D
 var i_hitbox : CollisionShape3D
+var hovered : bool
 @onready var overlay = preload("uid://m3fwn2be3pgh")
 
 func _ready():
@@ -21,7 +22,7 @@ func focus():
 	pass
 	
 func unfocus():
-	mesh.material_overlay = null
+	mesh.material_overlay = null 
 	pass
 	
 func connect_signals():
@@ -32,6 +33,11 @@ func get_mesh():
 	for i in parent.get_children():
 		if i is MeshInstance3D:
 			mesh = i
+
+func _physics_process(delta):
+	if hovered:
+		pass
+		
 
 func disable_box():
 	if disabled:
