@@ -14,7 +14,7 @@ const FOV_CHANGE = 1.5
 var init_weapon = preload("res://TestGrounds/Items/Weapon.tscn")
 
 signal attack_trigger(object)
-signal throw_trigger(object)
+signal throw_trigger(camera : Camera3D, strength : float)
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -92,16 +92,15 @@ func _headbob(input) -> Vector3:
 func _drop_item():
 	var world = get_tree().root
 	var weapon : Weapon = hand.get_child(0)
+	weapon.unequipped()
 	_disconnect_weapon(weapon)
 	weapon.global_position = camera.global_position
 	weapon.reparent(world)
 	#weapon.unequipped()
 	
 func _throw_weapon():
-	var world = get_tree().root
-	var weapon : Weapon = hand.get_child(0)
-	_disconnect_weapon(weapon)
-	weapon
+	# TO DO
+	pass
 
 func _on_interact_ray_player_update(object):
 	print(object.get_parent())
@@ -118,9 +117,10 @@ func _equip_weapon(object : Weapon):
 	object.equipped()
 
 func _fire_weapon():
-	throw_trigger.emit(camera)
-	_drop_item()
+	var weapon : Weapon = hand.get_child(0)
+	attack_trigger.emit(camera)
 	pass
+
 
 func _disconnect_weapon(weapon : Weapon):
 	self.disconnect("attack_trigger",Callable(weapon,"attack"))

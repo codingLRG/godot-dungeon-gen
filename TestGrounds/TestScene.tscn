@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://67qn125vnlrt"]
+[gd_scene load_steps=24 format=3 uid="uid://67qn125vnlrt"]
 
 [ext_resource type="Script" path="res://TestGrounds/CharacterBody3D.gd" id="1_dka3j"]
 [ext_resource type="Texture2D" uid="uid://6s6eld615tuy" path="res://TestGrounds/Textures/SANS.png" id="2_62ya5"]
@@ -7,7 +7,11 @@
 [ext_resource type="Script" path="res://TestGrounds/InteractRay.gd" id="3_dc7aq"]
 [ext_resource type="PackedScene" uid="uid://bb542r4ysussq" path="res://TestGrounds/Items/Weapon.tscn" id="6_n5d6u"]
 [ext_resource type="Resource" uid="uid://dwy0jqr0mjhay" path="res://TestGrounds/Items/shotgun.res" id="7_fvc1e"]
-[ext_resource type="Resource" uid="uid://d0c0wd0lueesi" path="res://TestGrounds/Items/Crowbar.res" id="8_3y8go"]
+[ext_resource type="Resource" uid="uid://d0c0wd0lueesi" path="res://TestGrounds/Items/Crowbar/Crowbar.res" id="8_3y8go"]
+[ext_resource type="ArrayMesh" uid="uid://dc2kf7kwi2ly6" path="res://TestGrounds/Items/Mesh/shotgunMesh.mesh" id="8_srkyi"]
+[ext_resource type="Shape3D" uid="uid://cqo17kfhet07b" path="res://TestGrounds/Items/shotgun_h.shape" id="9_llod7"]
+[ext_resource type="ArrayMesh" uid="uid://lyvljfysa22v" path="res://TestGrounds/Items/Mesh/crowbarMesh.mesh" id="11_li4b2"]
+[ext_resource type="PackedScene" uid="uid://dme5trysokp2i" path="res://TestGrounds/Projectiles/thrown_object.tscn" id="12_guu4u"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kgy1w"]
 sky_top_color = Color(0.327476, 0.620688, 0.797531, 1)
@@ -48,6 +52,11 @@ albedo_color = Color(1, 0, 0.352941, 1)
 albedo_texture = ExtResource("3_aum2d")
 uv1_triplanar = true
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_bhpli"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rlh17"]
+size = Vector3(0.542969, 0.633789, 1)
+
 [node name="World" type="Node"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -58,7 +67,7 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.453184, 0)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_dka3j")
@@ -123,13 +132,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.5, -51.1313)
 size = Vector3(58, 4, 1)
 
 [node name="Weapon" parent="." instance=ExtResource("6_n5d6u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.841974, 0.697043, -1.45101)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.841974, -0.0231768, -1.45101)
 freeze = true
 WEAPON_RESOURCE = ExtResource("7_fvc1e")
 
+[node name="Mesh" parent="Weapon" index="0"]
+mesh = ExtResource("8_srkyi")
+
+[node name="P_Hitbox" parent="Weapon" index="1"]
+shape = ExtResource("9_llod7")
+
+[node name="I_Hitbox" parent="Weapon/Interaction_Area" index="0"]
+shape = SubResource("BoxShape3D_bhpli")
+
 [node name="Weapon2" parent="." instance=ExtResource("6_n5d6u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.62001, 0.659668, -2.15821)
+transform = Transform3D(0.105587, -0.99441, 0, 0.99441, 0.105587, 0, 0, 0, 1, -0.62001, -0.427961, -2.15821)
 freeze = true
 WEAPON_RESOURCE = ExtResource("8_3y8go")
 
+[node name="Mesh" parent="Weapon2" index="0"]
+mesh = ExtResource("11_li4b2")
+
+[node name="I_Hitbox" parent="Weapon2/Interaction_Area" index="0"]
+transform = Transform3D(1.00001, -2.38419e-07, 0, 2.38419e-07, 1.00001, 0, 0, 0, 1, 0.228516, 0.183106, 0)
+shape = SubResource("BoxShape3D_rlh17")
+
+[node name="Thrown_Object" parent="." instance=ExtResource("12_guu4u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, -1)
+
 [connection signal="player_update" from="CharacterBody3D/Neck/Camera3D/InteractRay" to="CharacterBody3D" method="_on_interact_ray_player_update"]
+
+[editable path="Weapon"]
+[editable path="Weapon2"]

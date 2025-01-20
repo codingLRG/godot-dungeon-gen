@@ -8,7 +8,8 @@ class_name Weapon extends RigidBody3D
 @onready var phy_hitbox : CollisionShape3D = %P_Hitbox
 
 @onready var int_hitbox : CollisionShape3D = %Interaction_Area/I_Hitbox
-@onready var thr_hitbox : CollisionShape3D = %Throwable/T_Hitbox
+
+
 
 var is_equipped : bool = false
 
@@ -21,11 +22,13 @@ func equip_weapon(weapon : WEAPON_TYPE = null, player : bool = false):
 	WEAPON_RESOURCE = weapon
 	_load_weapon()
 
+func _physics_process(delta):
+	pass
+
 func _load_weapon():
-	mesh.mesh = WEAPON_RESOURCE.mesh_weapon if WEAPON_RESOURCE.mesh_weapon != null else null
+	mesh.mesh = WEAPON_RESOURCE.mesh if WEAPON_RESOURCE.mesh_weapon != null else null
 	phy_hitbox.shape = WEAPON_RESOURCE.p_hitbox if WEAPON_RESOURCE.p_hitbox != null else null
 	int_hitbox.shape = WEAPON_RESOURCE.i_hitbox if WEAPON_RESOURCE.i_hitbox != null else null
-	thr_hitbox.shape = WEAPON_RESOURCE.t_hitbox if WEAPON_RESOURCE.t_hitbox != null else null
 	
 static func spawn_new(resource : WEAPON_TYPE, impulse : Vector3 = Vector3(0,0,0)) -> Weapon:
 	var weapon_scene : PackedScene = load("uid://bb542r4ysussq")
@@ -40,14 +43,14 @@ func equipped():
 	var rotation_var = WEAPON_RESOURCE.rotation
 	transform.origin = origin_var
 	rotation_degrees = rotation_var
-	_toggle_hitboxes()
+	toggle_hitboxes()
 	pass
 	
 func unequipped():
 	self.freeze = false
-	_toggle_hitboxes()
+	toggle_hitboxes()
 	
-func _toggle_hitboxes():
+func toggle_hitboxes():
 	int_hitbox.disabled = not int_hitbox.disabled
 	phy_hitbox.disabled = not phy_hitbox.disabled
 
@@ -70,9 +73,3 @@ func add_bullet_hole(position:Vector3):
 	await get_tree().create_timer(3).timeout
 	hole.queue_free()
 	pass
-	
-func throw(camera : Camera3D):
-	unequipped()
-	gravity_scale = 0
-	var dir = -2 * camera.global_basis.z
-	apply_central_impulse(dir)

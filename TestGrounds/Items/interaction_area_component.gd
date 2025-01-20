@@ -29,6 +29,7 @@ func connect_signals():
 	on_hover.connect(focus)
 	off_hover.connect(unfocus)
 	
+	
 func get_mesh():
 	for i in parent.get_children():
 		if i is MeshInstance3D:
@@ -41,7 +42,7 @@ func _physics_process(delta):
 
 func disable_box():
 	if disabled:
-		disabled = false		
+		disabled = false
 	else:
 		disabled = true
 	i_hitbox.disabled = disabled
