@@ -6,7 +6,7 @@ class_name Weapon extends RigidBody3D
 
 @onready var phy_hitbox : CollisionShape3D = %P_Hitbox
 @onready var int_hitbox : CollisionShape3D = %Interaction_Area/I_Hitbox
-@onready var state_machine : WeaponStateMachine = $State_Machine
+@onready var state_machine : WeaponStateMachine = $WeaponStateMachine
 
 var is_equipped : bool = false
 var equipped_player : CharacterBody3D = null

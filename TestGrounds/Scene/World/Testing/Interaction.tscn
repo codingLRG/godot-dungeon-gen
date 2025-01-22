@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://c65booprlljkw"]
+
+[ext_resource type="PackedScene" uid="uid://dduftyuv8a667" path="res://TestGrounds/Scene/player.tscn" id="1_r4p8v"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_x6mv4"]
+sky_top_color = Color(0.327476, 0.620688, 0.797531, 1)
+sky_horizon_color = Color(0.633152, 0.718894, 0.774997, 1)
+ground_bottom_color = Color(0.205134, 0.254886, 0.302457, 1)
+ground_horizon_color = Color(0.633152, 0.718894, 0.774997, 1)
+
+[sub_resource type="Sky" id="Sky_achia"]
+sky_material = SubResource("ProceduralSkyMaterial_x6mv4")
+
+[sub_resource type="Environment" id="Environment_ewjyr"]
+background_mode = 2
+sky = SubResource("Sky_achia")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_axkkw"]
+
+[node name="Interaction" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ewjyr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Terrain" type="CSGBox3D" parent="."]
+use_collision = true
+collision_layer = 3
+collision_mask = 3
+size = Vector3(48.9958, 0.001, 23.1182)
+material = SubResource("StandardMaterial3D_axkkw")
+
+[node name="Player" parent="." instance=ExtResource("1_r4p8v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.207803, 1, -0.124779)

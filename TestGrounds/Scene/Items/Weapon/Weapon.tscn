@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://c56aa72kjw7hx"]
+
+[ext_resource type="Script" path="res://TestGrounds/Items/weapon_init.gd" id="1_e8lr3"]
+[ext_resource type="Script" path="res://TestGrounds/Items/interaction_area_component.gd" id="2_v8njp"]
+[ext_resource type="Script" path="res://TestGrounds/State/Weapon/State_Machine.gd" id="3_mtpfi"]
+[ext_resource type="Script" path="res://TestGrounds/State/Weapon/overworld.gd" id="4_yvk8n"]
+[ext_resource type="Script" path="res://TestGrounds/State/Weapon/equipped.gd" id="5_tibwn"]
+
+[node name="Weapon" type="RigidBody3D"]
+script = ExtResource("1_e8lr3")
+
+[node name="InteractionArea" type="Area3D" parent="."]
+script = ExtResource("2_v8njp")
+
+[node name="I_Hitbox" type="CollisionShape3D" parent="InteractionArea"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="WeaponStateMachine" type="Node" parent="."]
+script = ExtResource("3_mtpfi")
+
+[node name="Overworld" type="Node" parent="WeaponStateMachine"]
+script = ExtResource("4_yvk8n")
+
+[node name="Equipped" type="Node" parent="WeaponStateMachine"]
+script = ExtResource("5_tibwn")
+
+[node name="P_Hitbox" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true

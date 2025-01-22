@@ -1,6 +1,6 @@
 [gd_scene load_steps=19 format=3 uid="uid://67qn125vnlrt"]
 
-[ext_resource type="PackedScene" uid="uid://dduftyuv8a667" path="res://player.tscn" id="1_x5pkx"]
+[ext_resource type="PackedScene" uid="uid://dduftyuv8a667" path="res://TestGrounds/Scene/player.tscn" id="1_x5pkx"]
 [ext_resource type="Texture2D" uid="uid://bc3trhsk8hcnq" path="res://TestGrounds/Textures/gravel_embedded_concrete_diff_1k.jpg" id="2_ghvhp"]
 [ext_resource type="Texture2D" uid="uid://dqm07tjmpgvrp" path="res://TestGrounds/Textures/rusty_metal_03_diff_1k.jpg" id="3_aum2d"]
 [ext_resource type="PackedScene" uid="uid://bb542r4ysussq" path="res://TestGrounds/Items/Weapon.tscn" id="6_n5d6u"]
@@ -108,5 +108,6 @@ shape = SubResource("BoxShape3D_rlh17")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.85682, 7.98761, -1)
 gravity_scale = 1.0
 
+[editable path="CharacterBody3D"]
 [editable path="Weapon"]
 [editable path="Weapon2"]

@@ -1,15 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://bb542r4ysussq"]
+[gd_scene load_steps=7 format=3 uid="uid://bb542r4ysussq"]
 
 [ext_resource type="Script" path="res://TestGrounds/Items/interaction_area_component.gd" id="1_v5s6t"]
 [ext_resource type="Script" path="res://TestGrounds/Items/weapon_init.gd" id="1_w1h4u"]
-[ext_resource type="Script" path="res://TestGrounds/Projectiles/Throwable.gd" id="4_boy5d"]
 [ext_resource type="Shape3D" uid="uid://dgm11wpl64l4q" path="res://TestGrounds/Items/crowbar_h.shape" id="4_x3fw2"]
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_f3uma"]
-bounce = 1.0
+[ext_resource type="Script" path="res://TestGrounds/State/Weapon/State_Machine.gd" id="5_t3gok"]
+[ext_resource type="Script" path="res://TestGrounds/State/Weapon/overworld.gd" id="6_5osdp"]
+[ext_resource type="Script" path="res://TestGrounds/State/Weapon/equipped.gd" id="7_l1tbv"]
 
 [node name="Weapon" type="RigidBody3D"]
-physics_material_override = SubResource("PhysicsMaterial_f3uma")
 can_sleep = false
 script = ExtResource("1_w1h4u")
 
@@ -31,5 +29,14 @@ script = ExtResource("1_v5s6t")
 [node name="I_Hitbox" type="CollisionShape3D" parent="Interaction_Area"]
 unique_name_in_owner = true
 
-[node name="Throwable" type="Node" parent="."]
-script = ExtResource("4_boy5d")
+[node name="State_Machine" type="Node" parent="." node_paths=PackedStringArray("init_state")]
+script = ExtResource("5_t3gok")
+init_state = NodePath("Overworld")
+
+[node name="Overworld" type="Node" parent="State_Machine"]
+script = ExtResource("6_5osdp")
+
+[node name="Equipped" type="Node" parent="State_Machine"]
+script = ExtResource("7_l1tbv")
+
+[node name="Thrown" type="Node" parent="State_Machine"]
