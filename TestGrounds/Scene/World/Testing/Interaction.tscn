@@ -1,6 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://c65booprlljkw"]
+[gd_scene load_steps=9 format=3 uid="uid://c65booprlljkw"]
 
+[ext_resource type="Texture2D" uid="uid://bc3trhsk8hcnq" path="res://TestGrounds/Textures/gravel_embedded_concrete_diff_1k.jpg" id="1_qy71a"]
 [ext_resource type="PackedScene" uid="uid://dduftyuv8a667" path="res://TestGrounds/Scene/player.tscn" id="1_r4p8v"]
+[ext_resource type="PackedScene" uid="uid://c56aa72kjw7hx" path="res://TestGrounds/Scene/Items/Weapon/Weapon.tscn" id="3_506r3"]
+[ext_resource type="Resource" uid="uid://d0c0wd0lueesi" path="res://TestGrounds/Items/Crowbar/Crowbar.res" id="4_wk3dv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_x6mv4"]
 sky_top_color = Color(0.327476, 0.620688, 0.797531, 1)
@@ -18,6 +21,8 @@ tonemap_mode = 2
 glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_axkkw"]
+albedo_texture = ExtResource("1_qy71a")
+uv1_triplanar = true
 
 [node name="Interaction" type="Node3D"]
 
@@ -35,5 +40,14 @@ collision_mask = 3
 size = Vector3(48.9958, 0.001, 23.1182)
 material = SubResource("StandardMaterial3D_axkkw")
 
+[node name="CSGBox3D" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.45483, -9.13331)
+size = Vector3(44.6506, 5.90967, 1)
+
 [node name="Player" parent="." instance=ExtResource("1_r4p8v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.207803, 1, -0.124779)
+
+[node name="Weapon" parent="." instance=ExtResource("3_506r3")]
+transform = Transform3D(0.415852, 0, 0.909432, 0, 1, 0, -0.909432, 0, 0.415852, -0.348098, 1.38584, -2.05971)
+freeze = true
+WEAPON_RESOURCE = ExtResource("4_wk3dv")

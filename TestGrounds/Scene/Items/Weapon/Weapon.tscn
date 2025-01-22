@@ -10,11 +10,14 @@
 script = ExtResource("1_e8lr3")
 
 [node name="InteractionArea" type="Area3D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("2_v8njp")
 
 [node name="I_Hitbox" type="CollisionShape3D" parent="InteractionArea"]
+unique_name_in_owner = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
 
 [node name="WeaponStateMachine" type="Node" parent="."]
 script = ExtResource("3_mtpfi")
