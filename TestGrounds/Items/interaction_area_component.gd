@@ -4,8 +4,6 @@ signal on_hover
 signal off_hover
 signal interacted
 
-var disabled : bool = false
-
 var parent : Node
 var mesh : MeshInstance3D
 var i_hitbox : CollisionShape3D
@@ -28,21 +26,8 @@ func unfocus():
 func connect_signals():
 	on_hover.connect(focus)
 	off_hover.connect(unfocus)
-	
-	
+
 func get_mesh():
 	for i in parent.get_children():
 		if i is MeshInstance3D:
 			mesh = i
-
-func _physics_process(delta):
-	if hovered:
-		pass
-		
-
-func disable_box():
-	if disabled:
-		disabled = false
-	else:
-		disabled = true
-	i_hitbox.disabled = disabled

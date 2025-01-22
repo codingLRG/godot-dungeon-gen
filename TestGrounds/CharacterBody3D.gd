@@ -1,4 +1,5 @@
-extends CharacterBody3D
+class_name Player extends CharacterBody3D
+
 
 var speed : float
 const WALK_SPEED = 3.0
@@ -18,9 +19,9 @@ signal throw_trigger(camera : Camera3D, strength : float)
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-@onready var neck := $Neck
-@onready var camera := $Neck/Camera3D
-@onready var hand := $"Neck/Camera3D/Equipped Weapon"
+@onready var neck : Node3D = $Neck
+@onready var camera : Camera3D = $Neck/Camera3D
+@onready var hand : Node3D = $"Neck/Camera3D/Equipped Weapon"
 func _ready():
 	#SignalBus.equip_signal.connect(_equip_item)
 	GlobalVar.player_cam = camera
@@ -37,10 +38,8 @@ func _unhandled_input(event: InputEvent)->void:
 			camera.rotate_x(-event.relative.y*0.003)
 			camera.rotation.x = clamp(camera.rotation.x,deg_to_rad(-80),deg_to_rad(90))
 	if event.is_action_pressed("drop") and hand.get_child_count() != 0:
-		_drop_item()
+		_throw_weapon()
 		pass
-	if event.is_action_pressed("attack") and hand.get_child_count() != 0:
-		_fire_weapon()
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -92,14 +91,16 @@ func _headbob(input) -> Vector3:
 func _drop_item():
 	var world = get_tree().root
 	var weapon : Weapon = hand.get_child(0)
-	weapon.unequipped()
-	_disconnect_weapon(weapon)
-	weapon.global_position = camera.global_position
+	weapon.drop()
 	weapon.reparent(world)
-	#weapon.unequipped()
+	pass
 	
 func _throw_weapon():
 	# TO DO
+	var world = get_tree().root
+	var weapon : Weapon = hand.get_child(0)
+	weapon.drop()
+	weapon.reparent(world)
 	pass
 
 func _on_interact_ray_player_update(object):
@@ -113,19 +114,4 @@ func _equip_weapon(object : Weapon):
 	if hand.get_child_count() != 0:
 		_drop_item()
 	object.reparent(hand)
-	_connect_weapon(object)
-	object.equipped()
-
-func _fire_weapon():
-	var weapon : Weapon = hand.get_child(0)
-	attack_trigger.emit(camera)
-	pass
-
-
-func _disconnect_weapon(weapon : Weapon):
-	self.disconnect("attack_trigger",Callable(weapon,"attack"))
-	self.disconnect("throw_trigger",Callable(weapon,"throw"))
-
-func _connect_weapon(weapon : Weapon):
-	self.connect("attack_trigger",Callable(weapon,"attack"))
-	self.connect("throw_trigger",Callable(weapon,"throw"))
+	object.equip(self)
