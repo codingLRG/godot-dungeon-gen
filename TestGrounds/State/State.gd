@@ -8,10 +8,10 @@ func handle_input(_event: InputEvent) -> void:
 	pass
 
 # called every physics tick
-func _physics_process(delta) -> void:
+func physics_update(delta) -> void:
 	pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta) -> void:
+func update(delta) -> void:
 	pass
 
 # called when state is entered, enum is for initialization

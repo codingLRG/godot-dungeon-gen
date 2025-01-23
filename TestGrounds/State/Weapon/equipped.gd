@@ -18,11 +18,13 @@ func enter(previous_state_path : String, data :={}) -> void:
 	weapon.int_hitbox.disabled = true
 	weapon.phy_hitbox.disabled = true
 	weapon.freeze = true
+	equipped_player = data.player 
+	weapon.reparent(equipped_player.hand)
 	var origin_var = weapon.WEAPON_RESOURCE.position
 	var rotation_var =  weapon.WEAPON_RESOURCE.rotation
 	weapon.transform.origin = origin_var
 	weapon.rotation_degrees = rotation_var
-	equipped_player = data.player 
+	
 	pass
 
 # cleanup step of state
@@ -30,6 +32,7 @@ func exit() -> void:
 	weapon.freeze = false
 	weapon.transform.origin = equipped_player.camera.transform.origin
 	weapon.apply_central_impulse(-10 * equipped_player.transform.basis.z + Vector3(0,2,0))
+	weapon.reparent(get_tree().root)
 	pass
 	
 func attack(camera : Camera3D):

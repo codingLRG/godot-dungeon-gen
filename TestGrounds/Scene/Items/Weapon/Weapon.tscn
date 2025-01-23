@@ -1,12 +1,24 @@
-[gd_scene load_steps=6 format=3 uid="uid://c56aa72kjw7hx"]
+[gd_scene load_steps=10 format=3 uid="uid://c56aa72kjw7hx"]
 
 [ext_resource type="Script" path="res://TestGrounds/Items/weapon_init.gd" id="1_e8lr3"]
 [ext_resource type="Script" path="res://TestGrounds/Items/interaction_area_component.gd" id="2_v8njp"]
 [ext_resource type="Script" path="res://TestGrounds/State/Weapon/State_Machine.gd" id="3_mtpfi"]
 [ext_resource type="Script" path="res://TestGrounds/State/Weapon/overworld.gd" id="4_yvk8n"]
 [ext_resource type="Script" path="res://TestGrounds/State/Weapon/equipped.gd" id="5_tibwn"]
+[ext_resource type="Script" path="res://TestGrounds/State/Weapon/returned.gd" id="6_8nf86"]
+[ext_resource type="Script" path="res://TestGrounds/State/Weapon/thrown.gd" id="7_ndd1n"]
+
+[sub_resource type="Curve" id="Curve_6ro5w"]
+_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(0.6, 0.453351), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_0di5w"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.750789, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 1.4, 0.0, 0, 0]
+point_count = 3
 
 [node name="Weapon" type="RigidBody3D"]
+max_contacts_reported = 1
+contact_monitor = true
 script = ExtResource("1_e8lr3")
 
 [node name="InteractionArea" type="Area3D" parent="."]
@@ -19,8 +31,9 @@ unique_name_in_owner = true
 [node name="Mesh" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
 
-[node name="WeaponStateMachine" type="Node" parent="."]
+[node name="WeaponStateMachine" type="Node" parent="." node_paths=PackedStringArray("init_state")]
 script = ExtResource("3_mtpfi")
+init_state = NodePath("Overworld")
 
 [node name="Overworld" type="Node" parent="WeaponStateMachine"]
 script = ExtResource("4_yvk8n")
@@ -28,5 +41,15 @@ script = ExtResource("4_yvk8n")
 [node name="Equipped" type="Node" parent="WeaponStateMachine"]
 script = ExtResource("5_tibwn")
 
+[node name="Returned" type="Node" parent="WeaponStateMachine"]
+script = ExtResource("6_8nf86")
+return_curve = SubResource("Curve_6ro5w")
+
+[node name="Thrown" type="Node" parent="WeaponStateMachine"]
+script = ExtResource("7_ndd1n")
+gravity_curve = SubResource("Curve_0di5w")
+
 [node name="P_Hitbox" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true
+
+[connection signal="body_entered" from="." to="WeaponStateMachine/Thrown" method="_on_weapon_body_entered"]

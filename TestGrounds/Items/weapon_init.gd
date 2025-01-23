@@ -8,6 +8,8 @@ class_name Weapon extends RigidBody3D
 @onready var int_hitbox : CollisionShape3D = %InteractionArea/I_Hitbox
 @onready var state_machine : WeaponStateMachine = $WeaponStateMachine
 
+const GRAVITY_SCALE : float = 1
+
 var is_equipped : bool = false
 var equipped_player : CharacterBody3D = null
 
@@ -32,4 +34,13 @@ func drop():
 	state_machine.state.finished.emit("Overworld")
 
 func equip(player : Player):
-	state_machine.state.finished.emit("Equipped",{"player" : player} )
+	state_machine.state.finished.emit("Equipped", {"player" : player})
+
+func throw(player : Player):
+	state_machine.state.finished.emit("Thrown", {"player" : player})
+	
+func disable_gravity():
+	self.gravity_scale = 0
+
+func enable_gravity():
+	self.gravity_scale = GRAVITY_SCALE

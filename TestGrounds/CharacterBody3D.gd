@@ -89,18 +89,14 @@ func _headbob(input) -> Vector3:
 	return pos
 	
 func _drop_item():
-	var world = get_tree().root
 	var weapon : Weapon = hand.get_child(0)
-	weapon.drop()
-	weapon.reparent(world)
+	weapon.throw(self)
 	pass
 	
 func _throw_weapon():
 	# TO DO
-	var world = get_tree().root
 	var weapon : Weapon = hand.get_child(0)
-	weapon.drop()
-	weapon.reparent(world)
+	weapon.throw(self)
 	pass
 
 func _on_interact_ray_player_update(object):
@@ -113,5 +109,4 @@ func _on_interact_ray_player_update(object):
 func _equip_weapon(object : Weapon):
 	if hand.get_child_count() != 0:
 		_drop_item()
-	object.reparent(hand)
 	object.equip(self)
