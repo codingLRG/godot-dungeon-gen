@@ -1,13 +1,28 @@
 extends WeaponState
 
+signal throw_triggered(object : Player)
+
+var equipped_player : Player
+var charging : bool
+
+
 # handles unhandled inputs and allows for interaction upon InputEvent
 func handle_input(event: InputEvent) -> void:
+	
+	if event.is_action_pressed("charge throw"):
+		charging = true
+	if event.is_action_released("charge throw"):
+		charging = false
 	if event.is_action_pressed("attack"):
-		attack(equipped_player.camera)
+		if charging:
+			throw_triggered.emit(equipped_player)
+		else:	
+			attack(equipped_player.camera)
 	pass
 
 # called every physics tick
 func physics_update(delta) -> void:
+	GlobalVar.add_debug("Charging",charging,2)
 	pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func update(delta) -> void:
@@ -16,8 +31,9 @@ func update(delta) -> void:
 # called when state is entered, enum is for initialization
 func enter(previous_state_path : String, data :={}) -> void:
 	weapon.int_hitbox.disabled = true
-	weapon.phy_hitbox.disabled = true
+	weapon.hrt_hitbox.disabled = true
 	weapon.freeze = true
+	charging = false
 	equipped_player = data.player 
 	weapon.reparent(equipped_player.hand)
 	var origin_var = weapon.WEAPON_RESOURCE.position
@@ -29,10 +45,16 @@ func enter(previous_state_path : String, data :={}) -> void:
 
 # cleanup step of state
 func exit() -> void:
+	weapon.int_hitbox.disabled = false
+	weapon.hrt_hitbox.disabled = false
 	weapon.freeze = false
-	weapon.transform.origin = equipped_player.camera.transform.origin
-	weapon.apply_central_impulse(-10 * equipped_player.transform.basis.z + Vector3(0,2,0))
 	weapon.reparent(get_tree().root)
+	weapon.transform.origin = Vector3(0,0,0)
+	weapon.rotation_degrees = Vector3(0,0,0)
+	
+	
+	weapon.global_position = equipped_player.camera.global_position + Vector3(0,0,1.2) * -equipped_player.camera.global_basis.z
+	
 	pass
 	
 func attack(camera : Camera3D):
@@ -44,7 +66,8 @@ func attack(camera : Camera3D):
 	var query = PhysicsRayQueryParameters3D.create(origin,end)
 	query.collide_with_bodies
 	var result = space_state.intersect_ray(query)
-	add_bullet_hole(result.get("position"))
+	if result.get("position") != null:
+		add_bullet_hole(result.get("position"))
 
 func add_bullet_hole(position:Vector3):
 	var hole_scene = load("uid://hilnx0x72nv0")

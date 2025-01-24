@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://c65booprlljkw"]
+[gd_scene load_steps=13 format=3 uid="uid://c65booprlljkw"]
 
 [ext_resource type="Texture2D" uid="uid://bc3trhsk8hcnq" path="res://TestGrounds/Textures/gravel_embedded_concrete_diff_1k.jpg" id="1_qy71a"]
 [ext_resource type="PackedScene" uid="uid://dduftyuv8a667" path="res://TestGrounds/Scene/player.tscn" id="1_r4p8v"]
 [ext_resource type="PackedScene" uid="uid://c56aa72kjw7hx" path="res://TestGrounds/Scene/Items/Weapon/Weapon.tscn" id="3_506r3"]
 [ext_resource type="Resource" uid="uid://d0c0wd0lueesi" path="res://TestGrounds/Items/Crowbar/Crowbar.res" id="4_wk3dv"]
+[ext_resource type="ArrayMesh" uid="uid://lyvljfysa22v" path="res://TestGrounds/Items/Mesh/crowbarMesh.mesh" id="5_wfhm2"]
+[ext_resource type="Shape3D" uid="uid://dgm11wpl64l4q" path="res://TestGrounds/Items/crowbar_h.shape" id="6_k6w33"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_x6mv4"]
 sky_top_color = Color(0.327476, 0.620688, 0.797531, 1)
@@ -24,14 +26,9 @@ glow_enabled = true
 albedo_texture = ExtResource("1_qy71a")
 uv1_triplanar = true
 
-[sub_resource type="Curve3D" id="Curve3D_d25v0"]
-_data = {
-"points": PackedVector3Array(0.241113, -0.637208, 0.437253, -0.241113, 0.637208, -0.437253, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0),
-"tilts": PackedFloat32Array(0.824511, 0)
-}
-point_count = 2
+[sub_resource type="BoxShape3D" id="BoxShape3D_rlh17"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_oul8d"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_fqh4x"]
 
 [node name="Interaction" type="Node3D"]
 
@@ -43,34 +40,35 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="Terrain" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 42.6242)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.613958, 42.6242)
 use_collision = true
 collision_layer = 3
 collision_mask = 3
-size = Vector3(48.9958, 0.001, 108.367)
+size = Vector3(48.9958, 0.773083, 108.367)
 material = SubResource("StandardMaterial3D_axkkw")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.7219, -52.7465)
 size = Vector3(59.6045, 28.4438, 1)
 
-[node name="Player" parent="." instance=ExtResource("1_r4p8v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.207803, 1, -0.124779)
-
 [node name="Weapon" parent="." instance=ExtResource("3_506r3")]
 transform = Transform3D(0.415852, 0, 0.909432, 0, 1, 0, -0.909432, 0, 0.415852, -0.348098, 1.38584, -2.05971)
 freeze = true
 WEAPON_RESOURCE = ExtResource("4_wk3dv")
 
-[node name="Path3D" type="Path3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.0048, 0, 1.1664)
-curve = SubResource("Curve3D_d25v0")
+[node name="I_Hitbox" parent="Weapon/InteractionArea" index="0"]
+shape = SubResource("BoxShape3D_rlh17")
 
-[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(-8.33694e-09, -4.29089e-08, -0.999998, -0.981643, 0.190727, 0, 0.190727, 0.981642, -4.37113e-08, 10, -9.31323e-10, -4.65661e-10)
-progress = 10.1054
+[node name="Mesh" parent="Weapon" index="1"]
+mesh = ExtResource("5_wfhm2")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Path3D/PathFollow3D"]
-mesh = SubResource("BoxMesh_oul8d")
+[node name="P_Hitbox" parent="Weapon" index="3"]
+shape = ExtResource("6_k6w33")
 
-[editable path="Player"]
+[node name="H_Hitbox" parent="Weapon/HurtArea" index="0"]
+shape = SubResource("SphereShape3D_fqh4x")
+
+[node name="Player" parent="." instance=ExtResource("1_r4p8v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.207803, 1, -0.124779)
+
+[editable path="Weapon"]

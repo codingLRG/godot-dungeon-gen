@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://dduftyuv8a667"]
+[gd_scene load_steps=9 format=3 uid="uid://dduftyuv8a667"]
 
 [ext_resource type="Script" path="res://TestGrounds/CharacterBody3D.gd" id="1_0ycw2"]
 [ext_resource type="Texture2D" uid="uid://6s6eld615tuy" path="res://TestGrounds/Textures/SANS.png" id="2_15bxk"]
 [ext_resource type="Script" path="res://TestGrounds/InteractRay.gd" id="3_o5ws1"]
+[ext_resource type="Theme" uid="uid://6lnh5mbxpnv5" path="res://TestGrounds/UI/debug.theme" id="4_smph5"]
+[ext_resource type="Script" path="res://TestGrounds/debug.gd" id="5_gqsb1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cmbe1"]
 albedo_texture = ExtResource("2_15bxk")
@@ -67,5 +69,28 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000944585, -0.16648, -1.13
 [node name="Falling" type="Node" parent="State_Machine"]
 
 [node name="Inventory" type="Node" parent="State_Machine"]
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="DebugPanel" type="PanelContainer" parent="UI"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 210.0
+offset_bottom = 50.0
+theme = ExtResource("4_smph5")
+script = ExtResource("5_gqsb1")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/DebugPanel"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/DebugPanel/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
 
 [connection signal="player_update" from="Neck/Camera3D/InteractRay" to="." method="_on_interact_ray_player_update"]

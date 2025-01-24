@@ -1,25 +1,38 @@
-[gd_scene load_steps=10 format=3 uid="uid://c56aa72kjw7hx"]
+[gd_scene load_steps=16 format=3 uid="uid://c56aa72kjw7hx"]
 
 [ext_resource type="Script" path="res://TestGrounds/Items/weapon_init.gd" id="1_e8lr3"]
+[ext_resource type="Resource" uid="uid://dwy0jqr0mjhay" path="res://TestGrounds/Items/shotgun.res" id="2_qwsgg"]
 [ext_resource type="Script" path="res://TestGrounds/Items/interaction_area_component.gd" id="2_v8njp"]
 [ext_resource type="Script" path="res://TestGrounds/State/Weapon/State_Machine.gd" id="3_mtpfi"]
+[ext_resource type="ArrayMesh" uid="uid://dc2kf7kwi2ly6" path="res://TestGrounds/Items/Mesh/shotgunMesh.mesh" id="4_4p6w1"]
 [ext_resource type="Script" path="res://TestGrounds/State/Weapon/overworld.gd" id="4_yvk8n"]
 [ext_resource type="Script" path="res://TestGrounds/State/Weapon/equipped.gd" id="5_tibwn"]
 [ext_resource type="Script" path="res://TestGrounds/State/Weapon/returned.gd" id="6_8nf86"]
 [ext_resource type="Script" path="res://TestGrounds/State/Weapon/thrown.gd" id="7_ndd1n"]
+[ext_resource type="Shape3D" uid="uid://cqo17kfhet07b" path="res://TestGrounds/Items/shotgun_h.shape" id="10_sdpjl"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_l2tdo"]
+bounce = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bhpli"]
 
 [sub_resource type="Curve" id="Curve_6ro5w"]
-_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(0.6, 0.453351), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(0.501639, 0.176286), 0.28624, 0.28624, 0, 0, Vector2(1, 1), 2.72065, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_0di5w"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.750789, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 1.4, 0.0, 0, 0]
 point_count = 3
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_ehpy1"]
+
 [node name="Weapon" type="RigidBody3D"]
+physics_material_override = SubResource("PhysicsMaterial_l2tdo")
+continuous_cd = true
 max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("1_e8lr3")
+WEAPON_RESOURCE = ExtResource("2_qwsgg")
 
 [node name="InteractionArea" type="Area3D" parent="."]
 unique_name_in_owner = true
@@ -27,9 +40,11 @@ script = ExtResource("2_v8njp")
 
 [node name="I_Hitbox" type="CollisionShape3D" parent="InteractionArea"]
 unique_name_in_owner = true
+shape = SubResource("BoxShape3D_bhpli")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
+mesh = ExtResource("4_4p6w1")
 
 [node name="WeaponStateMachine" type="Node" parent="." node_paths=PackedStringArray("init_state")]
 script = ExtResource("3_mtpfi")
@@ -41,7 +56,7 @@ script = ExtResource("4_yvk8n")
 [node name="Equipped" type="Node" parent="WeaponStateMachine"]
 script = ExtResource("5_tibwn")
 
-[node name="Returned" type="Node" parent="WeaponStateMachine"]
+[node name="Returned2" type="Node" parent="WeaponStateMachine"]
 script = ExtResource("6_8nf86")
 return_curve = SubResource("Curve_6ro5w")
 
@@ -51,5 +66,15 @@ gravity_curve = SubResource("Curve_0di5w")
 
 [node name="P_Hitbox" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true
+shape = ExtResource("10_sdpjl")
+
+[node name="HurtArea" type="Area3D" parent="."]
+unique_name_in_owner = true
+
+[node name="H_Hitbox" type="CollisionShape3D" parent="HurtArea"]
+unique_name_in_owner = true
+shape = SubResource("SphereShape3D_ehpy1")
 
 [connection signal="body_entered" from="." to="WeaponStateMachine/Thrown" method="_on_weapon_body_entered"]
+[connection signal="throw_triggered" from="WeaponStateMachine/Equipped" to="." method="throw"]
+[connection signal="collided" from="WeaponStateMachine/Thrown" to="." method="overworld"]

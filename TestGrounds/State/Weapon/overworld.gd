@@ -13,10 +13,10 @@ func update(delta) -> void:
 
 # called when state is entered, enum is for initialization
 func enter(previous_state_path : String, data :={}) -> void:
-	weapon.int_hitbox.disabled = false
-	weapon.phy_hitbox.disabled = false
+	weapon.hrt_hitbox.disabled = true
 	pass
 
 # cleanup step of state
 func exit() -> void:
+	weapon.hrt_hitbox.disabled = false
 	pass

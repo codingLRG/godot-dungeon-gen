@@ -5,7 +5,6 @@ const EQUIPPED = "equipped"
 const THROWN = "thrown"
 
 var weapon : Weapon
-var equipped_player : Player
 
 func _ready():
 	await owner.ready

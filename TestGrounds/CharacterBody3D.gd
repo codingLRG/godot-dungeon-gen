@@ -24,7 +24,6 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var hand : Node3D = $"Neck/Camera3D/Equipped Weapon"
 func _ready():
 	#SignalBus.equip_signal.connect(_equip_item)
-	GlobalVar.player_cam = camera
 	pass
 
 func _unhandled_input(event: InputEvent)->void:
@@ -38,7 +37,7 @@ func _unhandled_input(event: InputEvent)->void:
 			camera.rotate_x(-event.relative.y*0.003)
 			camera.rotation.x = clamp(camera.rotation.x,deg_to_rad(-80),deg_to_rad(90))
 	if event.is_action_pressed("drop") and hand.get_child_count() != 0:
-		_throw_weapon()
+		_drop_item()
 		pass
 
 func _physics_process(delta):
@@ -90,7 +89,7 @@ func _headbob(input) -> Vector3:
 	
 func _drop_item():
 	var weapon : Weapon = hand.get_child(0)
-	weapon.throw(self)
+	weapon.drop(self)
 	pass
 	
 func _throw_weapon():
@@ -100,11 +99,8 @@ func _throw_weapon():
 	pass
 
 func _on_interact_ray_player_update(object):
-	print(object.get_parent())
 	if object is Weapon:
 		_equip_weapon(object)
-	pass # Replace with function body.
-	print(object.get_parent())
 
 func _equip_weapon(object : Weapon):
 	if hand.get_child_count() != 0:
